@@ -70,12 +70,35 @@ public class AppWindow {
             {
                 showQ.setText("Game finished");
                 showQ.setEnabled(false);
+                showQ.setVisible(false);
+                showRestartButton();
             }
         }
 
         main.add(showQ);
 
         main.setVisible(true);
+    }
+
+    public void showRestartButton()
+    {
+        JButton restart = new JButton("Restart");
+        ImageIcon playAgain = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ICONS/play-again.png")));
+        Image scaledImage = playAgain.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        restart.setIcon(new ImageIcon(scaledImage));
+        restart.setBounds(300, 650, 200, 50);
+        restart.setSize(200, 50);
+        restart.setFocusable(false);
+
+        restart.addActionListener(_ -> {
+            QuizLogic.restartQuiz();
+            main.dispose();
+            start();
+        });
+
+        restart.setVisible(true);
+
+        main.add(restart);
     }
 
     public void setMenuBar()

@@ -39,4 +39,10 @@ public class QuizLogic
         }
         return true;
     }
+
+    public static void restartQuiz()
+    {
+        scores = new int[]{0,0};
+        QuizLogic.categories.clear();
+    }
 }
