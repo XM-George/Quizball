@@ -38,7 +38,7 @@ public class AppWindow {
         JButton showQ = new JButton();
         showQ.setFocusable(false);
         showQ.setBounds(300, 650, 200, 50);
-        showQ.setSize(200, 50);
+        //showQ.setSize(200, 50);
         if(QuizLogic.categories.isEmpty()) {
             showQ.setText("Select categories");
         }
@@ -99,7 +99,7 @@ public class AppWindow {
         Image scaledImage = playAgain.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         restart.setIcon(new ImageIcon(scaledImage));
         restart.setBounds(300, 650, 200, 50);
-        restart.setSize(200, 50);
+        //restart.setSize(200, 50);
         restart.setFocusable(false);
         main.getRootPane().setDefaultButton(restart);
 
@@ -184,14 +184,14 @@ public class AppWindow {
         }
 
         JButton confirmButton = new JButton("Confirm");
-        confirmButton.setBounds(100, 420, 200, 50);
+        confirmButton.setBounds(50, 420, 200, 50);
         confirmButton.setFocusable(false);
         confirmButton.setFont(f);
         confirmButton.addActionListener(_ -> categoryDialog.dispose());
         categoryDialog.getRootPane().setDefaultButton(confirmButton);
 
         JButton resetButton = new JButton("Reset");
-        resetButton.setBounds(500, 420, 200, 50);
+        resetButton.setBounds(300, 420, 200, 50);
         resetButton.setFocusable(false);
         resetButton.setFont(f);
         resetButton.addActionListener(_ -> {
@@ -202,14 +202,24 @@ public class AppWindow {
             }
         });
 
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(550, 420, 200, 50);
+        cancelButton.setFocusable(false);
+        cancelButton.setFont(f);
+        cancelButton.addActionListener(_ -> {
+            QuizLogic.categories.clear();
+            categoryDialog.dispose();
+        });
+
+        categoryDialog.add(cancelButton);
         categoryDialog.add(confirmButton);
         categoryDialog.add(resetButton);
 
         categoryDialog.setVisible(true);
 
-        if (QuizLogic.categories.isEmpty()) {
+        /*if (QuizLogic.categories.isEmpty()) {
             QuizLogic.categories.addAll(Arrays.asList(Question.categoryNames));
-        }
+        }*/
 
         QuizLogic.initializeSelectedQuestionsArray();
     }
@@ -287,6 +297,16 @@ public class AppWindow {
 
             questionDialog.add(label);
         }
+
+        height+=10;
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(100, height, 200, 50);
+        cancelButton.setFocusable(false);
+        cancelButton.setFont(f);
+        cancelButton.addActionListener(_ -> questionDialog.dispose());
+
+        questionDialog.add(cancelButton);
 
         questionDialog.setVisible(true);
 
