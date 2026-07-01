@@ -6,6 +6,7 @@ import API.QuizLogic;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -571,7 +572,62 @@ public class AppWindow {
 
     public void showQuestionsPlayedAndLeft()
     {
-        JTable questionsTable = new JTable();
+        JDialog dialog = new JDialog(main, "Questions statistics", true);
+        dialog.setSize(700, 500);
+        dialog.setLocationRelativeTo(main);
+        dialog.setResizable(false);
+        dialog.setLayout(new BorderLayout());
+
+        String[] columns = {
+                "Category",
+                "Questions left",
+                "Questions played"
+        };
+
+        String[] categoriesToShow = Question.categoryNames;
+
+        ArrayList<Object[]> rows = new ArrayList<>();
+
+        for (String category : categoriesToShow)
+        {
+            for (int points = 1; points <= 3; points++)
+            {
+                if ("hiddenQuestion".equals(category) && points != 2) {
+                    continue;
+                }
+
+                if ("top5".equals(category) && points != 3) {
+                    continue;
+                }
+
+                rows.add(new Object[]{
+                        category + " x" + points,
+                        Question.getQuestionsLeft(category, points),
+                        Question.getQuestionsPlayed(category, points)
+                });
+            }
+        }
+
+        Object[][] data = rows.toArray(new Object[0][0]);
+
+        JTable questionsTable = new JTable(data, columns);
+        questionsTable.setEnabled(false);
+        questionsTable.setRowHeight(28);
+        questionsTable.getTableHeader().setReorderingAllowed(false);
+
+        JScrollPane scrollPane = new JScrollPane(questionsTable);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setFocusable(false);
+        closeButton.addActionListener(_ -> dialog.dispose());
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.add(closeButton);
+
+        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.add(bottomPanel, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
     }
 
     private JButton getShowNextButton(String use, JFrame frame) {

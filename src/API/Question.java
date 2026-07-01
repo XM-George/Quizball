@@ -10,6 +10,7 @@ public class Question
 {
     public static String[] categoryNames = {"geography" , "gossip" , "hiddenQuestion" , "history" , "top5"};
     public static Map<String, ArrayList<Question>[]> categories = new HashMap<>();
+    public static Map<String, int[]> originalQuestionCount = new HashMap<>();
 
     public String question;
     public String answer;
@@ -96,4 +97,47 @@ public class Question
 
         return false;
     }
+
+    public static void saveOriginalQuestionCounts()
+    {
+        originalQuestionCount.clear();
+
+        for (String category : categoryNames)
+        {
+            int[] counts = new int[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                counts[i] = categories.get(category)[i].size();
+            }
+
+            originalQuestionCount.put(category, counts);
+        }
+    }
+
+    public static int getQuestionsLeft(String category, int points)
+    {
+        ArrayList<Question>[] questionLists = categories.get(category);
+
+        if (questionLists == null || points < 1 || points > 3) {
+            return 0;
+        }
+
+        return questionLists[points - 1].size();
+    }
+
+    public static int getQuestionsPlayed(String category, int points)
+    {
+        int[] originalCounts = originalQuestionCount.get(category);
+
+        if (originalCounts == null || points < 1 || points > 3) {
+            return 0;
+        }
+
+        int original = originalCounts[points - 1];
+        int left = getQuestionsLeft(category, points);
+
+        return original - left;
+    }
+
 }

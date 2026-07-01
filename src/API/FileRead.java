@@ -64,5 +64,7 @@ public class FileRead
                 e.printStackTrace();
             }
         }
+
+        Question.saveOriginalQuestionCounts();
     }
 }
