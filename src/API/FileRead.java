@@ -25,7 +25,7 @@ public class FileRead
                 while ((line = br.readLine()) != null)
                 {
                     //χωρίζονται απο κόμμα
-                    String[] values = line.split(",");
+                    String[] values = line.split("===");
                     try
                     {
                         new Question(values[0],
