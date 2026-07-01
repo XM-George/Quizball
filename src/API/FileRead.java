@@ -7,7 +7,11 @@ public class FileRead
     public void readCSV()
     {
         String line;
-        String[] pathNames = {"questions/geography.csv" , "questions/gossip.csv" , "questions/hiddenQuestion.csv" , "questions/history.csv" , "questions/top5.csv"} ;
+        String[] pathNames = {"questions/geography.csv",
+                              "questions/gossip.csv",
+                              "questions/hiddenQuestion.csv",
+                              "questions/history.csv",
+                              "questions/top5.csv"} ;
 
         for(String filename : pathNames)
         {
@@ -24,18 +28,29 @@ public class FileRead
             {
                 while ((line = br.readLine()) != null)
                 {
-                    //χωρίζονται απο κόμμα
-                    String[] values = line.split("===");
+                    if (line.trim().isEmpty()) {
+                        continue;
+                    }
+
+                    //χωρίζονται απο ===
+                    String[] values = line.split("===", 3);
+
+                    if (values.length < 3) {
+                        System.out.println("Invalid question line: " + line);
+                        continue;
+                    }
                     try
                     {
-                        new Question(values[0],
-                                     values[1].replace("\\n","\n"),
-                                     Integer.parseInt(values[2]),
+                        new Question(values[0].trim(),
+                                     values[1].trim().replace("\\n","\n"),
+                                     Integer.parseInt(values[2].trim()),
                                      category);
                     }
                     catch (NumberFormatException e)
                     {
-                        new Question(values[0], values[1].replace("\\n","\n"), category);
+                        new Question(values[0].trim(),
+                                     values[1].trim().replace("\\n","\n"),
+                                     category);
                     }
                 }
             }

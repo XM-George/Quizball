@@ -30,10 +30,7 @@ public class Question
 
     public Question(String question, String answer, String category)
     {
-        this.question = question;
-        this.answer = answer;
-        this.points = 0;
-        categories.get(category)[points].add(this);
+        this(question, answer, 1, category);
     }
 
     public Question(String question, String answer, int points, String category)
@@ -41,11 +38,38 @@ public class Question
         this.question = question;
         this.answer = answer;
         this.points = points;
-        categories.get(category)[points-1].add(this);
+
+        if (!categories.containsKey(category)) {
+            throw new IllegalArgumentException("Unknown category: " + category);
+        }
+
+        if (points < 1 || points > 3) {
+            throw new IllegalArgumentException("Invalid points: " + points + " for question: " + question);
+        }
+
+        categories.get(category)[points - 1].add(this);
     }
 
     public static void getAndThenRemoveQuestion()
     {
+        if (QuizLogic.questionCategory == null || QuizLogic.questionPoints <= 0) {
+            QuizLogic.currentQuestion = null;
+            return;
+        }
+
+        ArrayList<Question>[] categoryQuestions = categories.get(QuizLogic.questionCategory);
+
+        if (categoryQuestions == null) {
+            QuizLogic.currentQuestion = null;
+            return;
+        }
+
+        if (QuizLogic.questionPoints > categoryQuestions.length) {
+            QuizLogic.currentQuestion = null;
+            return;
+        }
+
+
         ArrayList<Question> list = categories.get(QuizLogic.questionCategory)[QuizLogic.questionPoints - 1];
         if (list.isEmpty()) {
             QuizLogic.currentQuestion = null;
@@ -53,8 +77,7 @@ public class Question
         }
 
         int random = (int) (Math.random() * list.size());
-        QuizLogic.currentQuestion = list.get(random);
-        list.remove(random);
+        QuizLogic.currentQuestion = list.remove(random);
     }
 
     public static boolean hasAvailableQuestion()

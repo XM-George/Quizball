@@ -62,31 +62,28 @@ public class AppWindow {
         }
 
         showQ.addActionListener(_ -> {
-            main.dispose();
-            if(QuizLogic.categories.isEmpty()) {
+            if (QuizLogic.categories.isEmpty()) {
                 categorySelect();
-                if (!Question.hasAvailableQuestion()) {
-                    start();
-                    return;
-                }
 
+                main.dispose();
                 start();
+                return;
             }
-            else
-            {
-                if(!Question.hasAvailableQuestion()) {
-                    start();
-                    return;
-                }
 
-                questionSelect();
+            if (!Question.hasAvailableQuestion()) {
+                main.dispose();
+                start();
+                return;
+            }
 
-                if(QuizLogic.currentQuestion != null) {
-                    showQuestionAnswerDialog("Q");
-                }
-                else{
-                    start();
-                }
+            boolean selected = questionSelect();
+
+            if (selected) {
+                main.dispose();
+                showQuestionAnswerDialog("Q");
+            } else {
+                main.dispose();
+                start();
             }
         });
 
@@ -217,15 +214,17 @@ public class AppWindow {
         QuizLogic.initializeSelectedQuestionsArray();
     }
 
-    public void questionSelect()
+    public boolean questionSelect()
     {
+        QuizLogic.resetValuesAfterQuestion();
+
         JDialog questionDialog = new JDialog();
         questionDialog.getContentPane().setPreferredSize(new Dimension(400, 100 * (QuizLogic.categories.size() + 1) ));
         questionDialog.pack();
         questionDialog.setTitle("Choose question");
         ImageIcon questionImage = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ICONS/questions.png")));
         questionDialog.setIconImage(questionImage.getImage());
-        questionDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        questionDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         questionDialog.setLocationRelativeTo(null);
         questionDialog.setResizable(false);
         questionDialog.setModal(true);
@@ -247,42 +246,31 @@ public class AppWindow {
             for(int i=0;i<3;i++)
             {
                 JButton button = new JButton();
-                if("hiddenQuestion".equals(c))
-                {
-                    button.setText("x2");
-                }
-                else if ("top5".equals(c))
-                {
-                    button.setText("x3");
-                }
-                else
-                {
-                    button.setText("x" + (i+1));
-                }
+
+                int points = getPointsForButton(c, i);
+
+                button.setText("x" + points);
                 button.setBounds(width, height, 100, 50);
                 button.setFocusable(false);
                 button.setFont(f);
-                if(Question.categories.get(c)[Integer.parseInt(button.getText().replace("x",""))-1].isEmpty())
+
+                if (Question.categories.get(c)[points - 1].isEmpty())
                 {
                     button.setEnabled(false);
                     QuizLogic.selectedQuestions[categoryNumber][i] = 1;
                 }
+
                 if(QuizLogic.selectedQuestions[categoryNumber][i] == 1)
                 {
                     button.setEnabled(false);
                 }
+
                 int finalI = i;
                 int finalCategoryNumber = categoryNumber;
+
                 button.addActionListener(_ -> {
                     QuizLogic.questionCategory = c;
-                    try
-                    {
-                        QuizLogic.questionPoints = Integer.parseInt(button.getText().replace("x",""));
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        QuizLogic.questionPoints = 0;
-                    }
+                    QuizLogic.questionPoints = points;
                     QuizLogic.selectedQuestions[finalCategoryNumber][finalI] = 1;
                     questionDialog.dispose();
                 });
@@ -302,7 +290,27 @@ public class AppWindow {
 
         questionDialog.setVisible(true);
 
+        if (QuizLogic.questionCategory == null || QuizLogic.questionPoints <= 0) {
+            QuizLogic.currentQuestion = null;
+            return false;
+        }
+
         Question.getAndThenRemoveQuestion();
+
+        return QuizLogic.currentQuestion != null;
+    }
+
+    private int getPointsForButton(String category, int buttonIndex)
+    {
+        if ("hiddenQuestion".equals(category)) {
+            return 2;
+        }
+
+        if ("top5".equals(category)) {
+            return 3;
+        }
+
+        return buttonIndex + 1;
     }
 
     public void getNames()
@@ -465,6 +473,18 @@ public class AppWindow {
     }
 
     public void showQuestionAnswerDialog(String use) {
+
+        if (QuizLogic.currentQuestion == null) {
+            JOptionPane.showMessageDialog(main, "No question available.");
+
+            if (main != null) {
+                main.dispose();
+            }
+
+            start();
+            return;
+        }
+
         JFrame questionAnswerFrame = new JFrame();
         questionAnswerFrame.setSize(600, 500);
         questionAnswerFrame.setLayout(null);
@@ -472,7 +492,7 @@ public class AppWindow {
         questionAnswerFrame.setResizable(false);
         questionAnswerFrame.setIconImage(footballImage.getImage());
 
-        questionAnswerFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        questionAnswerFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         JTextArea field = new JTextArea();
         field.setBounds(50, 50, 500, 300);

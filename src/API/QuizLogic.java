@@ -54,4 +54,11 @@ public class QuizLogic
         questionPoints = 0;
         currentQuestion = null;
     }
+
+    public static void resetValuesAfterQuestion()
+    {
+        QuizLogic.questionCategory = null;
+        QuizLogic.questionPoints = 0;
+        QuizLogic.currentQuestion = null;
+    }
 }
