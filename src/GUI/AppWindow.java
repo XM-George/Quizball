@@ -52,13 +52,13 @@ public class AppWindow {
             showQ.setText("Game finished");
             showQ.setEnabled(false);
             showQ.setVisible(false);
-            showRestartButton();
+            showGameFinishedScreen();
         }
         else if (!QuizLogic.categories.isEmpty() && QuizLogic.checkIfAllQuestionsArePressed()) {
             showQ.setText("Game finished");
             showQ.setEnabled(false);
             showQ.setVisible(false);
-            showRestartButton();
+            showGameFinishedScreen();
         }
 
         showQ.addActionListener(_ -> {
@@ -92,6 +92,32 @@ public class AppWindow {
         main.setVisible(true);
     }
 
+    public void showGameFinishedScreen()
+    {
+        JLabel finished = new JLabel("Game finished");
+        finished.setFont(f);
+        finished.setBounds(300, 450, 300, 40);
+
+        String winnerText;
+
+        if (QuizLogic.scores[0] > QuizLogic.scores[1]) {
+            winnerText = "Winner: " + QuizLogic.playerNames[0];
+        } else if (QuizLogic.scores[1] > QuizLogic.scores[0]) {
+            winnerText = "Winner: " + QuizLogic.playerNames[1];
+        } else {
+            winnerText = "Draw";
+        }
+
+        JLabel winner = new JLabel(winnerText);
+        winner.setFont(f);
+        winner.setBounds(300, 500, 300, 40);
+
+        main.add(finished);
+        main.add(winner);
+
+        showRestartButton();
+    }
+
     public void showRestartButton()
     {
         JButton restart = new JButton("Restart");
@@ -117,17 +143,26 @@ public class AppWindow {
     public void setMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Set names");
+        JMenu names = new JMenu("Set names");
         JMenuItem setNames = new JMenuItem("Set names");
         setNames.addActionListener(_ -> {
-            getNames();
             main.dispose();
+            getNames();
             start();
         });
 
-        menu.add(setNames);
+        JMenu questions = new JMenu("See questions");
+        JMenuItem questionsLeft = new JMenuItem("See questions left and questions played");
+        questionsLeft.addActionListener(_ -> {
+            showQuestionsPlayedAndLeft();
+        });
 
-        menuBar.add(menu);
+        names.add(setNames);
+
+        questions.add(questionsLeft);
+
+        menuBar.add(names);
+        menuBar.add(questions);
 
         main.setJMenuBar(menuBar);
     }
@@ -216,10 +251,6 @@ public class AppWindow {
         categoryDialog.add(resetButton);
 
         categoryDialog.setVisible(true);
-
-        /*if (QuizLogic.categories.isEmpty()) {
-            QuizLogic.categories.addAll(Arrays.asList(Question.categoryNames));
-        }*/
 
         QuizLogic.initializeSelectedQuestionsArray();
     }
@@ -536,6 +567,11 @@ public class AppWindow {
         questionAnswerFrame.add(showNext);
 
         questionAnswerFrame.setVisible(true);
+    }
+
+    public void showQuestionsPlayedAndLeft()
+    {
+        JTable questionsTable = new JTable();
     }
 
     private JButton getShowNextButton(String use, JFrame frame) {
