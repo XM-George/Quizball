@@ -36,6 +36,7 @@ public class AppWindow {
         main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JButton showQ = new JButton();
+        showQ.setFocusable(false);
         showQ.setBounds(300, 650, 200, 50);
         showQ.setSize(200, 50);
         if(QuizLogic.categories.isEmpty()) {
@@ -45,35 +46,49 @@ public class AppWindow {
         {
             showQ.setText("Select question");
         }
-        showQ.setFocusable(false);
         main.getRootPane().setDefaultButton(showQ);
+
+        if (!QuizLogic.categories.isEmpty() && !Question.hasAvailableQuestion()) {
+            showQ.setText("Game finished");
+            showQ.setEnabled(false);
+            showQ.setVisible(false);
+            showRestartButton();
+        }
+        else if (!QuizLogic.categories.isEmpty() && QuizLogic.checkIfAllQuestionsArePressed()) {
+            showQ.setText("Game finished");
+            showQ.setEnabled(false);
+            showQ.setVisible(false);
+            showRestartButton();
+        }
+
         showQ.addActionListener(_ -> {
             main.dispose();
             if(QuizLogic.categories.isEmpty()) {
                 categorySelect();
+                if (!Question.hasAvailableQuestion()) {
+                    start();
+                    return;
+                }
+
                 start();
             }
             else
             {
+                if(!Question.hasAvailableQuestion()) {
+                    start();
+                    return;
+                }
+
                 questionSelect();
-                showQuestionAnswerDialog("Q");
+
+                if(QuizLogic.currentQuestion != null) {
+                    showQuestionAnswerDialog("Q");
+                }
+                else{
+                    start();
+                }
             }
         });
-
-        if(Question.checkIfEmpty()) {
-            showQ.setText("No questions to show");
-            showQ.setEnabled(false);
-        }
-
-        if(!QuizLogic.categories.isEmpty()) {
-            if(QuizLogic.checkIfAllQuestionsArePressed())
-            {
-                showQ.setText("Game finished");
-                showQ.setEnabled(false);
-                showQ.setVisible(false);
-                showRestartButton();
-            }
-        }
 
         main.add(showQ);
 
@@ -247,6 +262,11 @@ public class AppWindow {
                 button.setBounds(width, height, 100, 50);
                 button.setFocusable(false);
                 button.setFont(f);
+                if(Question.categories.get(c)[Integer.parseInt(button.getText().replace("x",""))-1].isEmpty())
+                {
+                    button.setEnabled(false);
+                    QuizLogic.selectedQuestions[categoryNumber][i] = 1;
+                }
                 if(QuizLogic.selectedQuestions[categoryNumber][i] == 1)
                 {
                     button.setEnabled(false);

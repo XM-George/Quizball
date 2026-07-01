@@ -30,6 +30,10 @@ public class QuizLogic
 
     public static boolean checkIfAllQuestionsArePressed()
     {
+        if (selectedQuestions == null) {
+            return false;
+        }
+
         for (int[] selectedQuestion : selectedQuestions) {
             for (int i : selectedQuestion) {
                 if (i == 0) {

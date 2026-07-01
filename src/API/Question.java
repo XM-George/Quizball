@@ -46,26 +46,31 @@ public class Question
 
     public static void getAndThenRemoveQuestion()
     {
-        int random = (int) (Math.random() * categories.get(QuizLogic.questionCategory)[QuizLogic.questionPoints - 1].size());
-        QuizLogic.currentQuestion = categories.get(QuizLogic.questionCategory)[QuizLogic.questionPoints - 1].get(random);
-        categories.get(QuizLogic.questionCategory)[QuizLogic.questionPoints - 1].remove(random);
+        ArrayList<Question> list = categories.get(QuizLogic.questionCategory)[QuizLogic.questionPoints - 1];
+        if (list.isEmpty()) {
+            QuizLogic.currentQuestion = null;
+            return;
+        }
+
+        int random = (int) (Math.random() * list.size());
+        QuizLogic.currentQuestion = list.get(random);
+        list.remove(random);
     }
 
-    public static boolean checkIfEmpty()
+    public static boolean hasAvailableQuestion()
     {
-        if(QuizLogic.categories.isEmpty())
-        {
+        if (QuizLogic.categories.isEmpty()) {
             return false;
         }
-        for(String c : QuizLogic.categories) {
-            for (int i = 0; i < 3; i++)
-            {
-                if(!categories.get(c)[i].isEmpty())
-                {
-                    return false;
+
+        for (String c : QuizLogic.categories) {
+            for (int i = 0; i < 3; i++) {
+                if (!categories.get(c)[i].isEmpty()) {
+                    return true;
                 }
             }
         }
-        return true;
+
+        return false;
     }
 }
