@@ -26,8 +26,13 @@ public class FileRead
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is)))
             {
+                int lineNumber=0;
+
                 while ((line = br.readLine()) != null)
                 {
+
+                    lineNumber++;
+
                     if (line.trim().isEmpty()) {
                         continue;
                     }
@@ -36,7 +41,7 @@ public class FileRead
                     String[] values = line.split("===", 3);
 
                     if (values.length < 3) {
-                        System.out.println("Invalid question line: " + line);
+                        System.out.println("Invalid line in " + filename + " at line " + lineNumber + ": " + line);
                         continue;
                     }
                     try
