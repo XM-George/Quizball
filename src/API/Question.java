@@ -140,4 +140,17 @@ public class Question
         return original - left;
     }
 
+    public static int getCurrentQuestionPoints()
+    {
+        if (QuizLogic.currentQuestion == null) {
+            return 0;
+        }
+
+        if (QuizLogic.doublePointsActive) {
+            return QuizLogic.currentQuestion.points * 2;
+        }
+
+        return QuizLogic.currentQuestion.points;
+    }
+
 }
