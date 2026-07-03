@@ -16,6 +16,13 @@ public class QuizLogic
 
     public static int[][] selectedQuestions;
 
+    public static boolean[] phoneHelpUsed = {false, false};
+    public static boolean[] doublePointsUsed = {false, false};
+    public static boolean[] stealQuestionUsed = {false, false};
+
+    public static int activePlayer = 0;
+    public static boolean doublePointsActive = false;
+
     public static void initializeSelectedQuestionsArray()
     {
         selectedQuestions = new int[categories.size()][3];
@@ -53,6 +60,13 @@ public class QuizLogic
         questionCategory = null;
         questionPoints = 0;
         currentQuestion = null;
+
+        phoneHelpUsed = new boolean[]{false, false};
+        doublePointsUsed = new boolean[]{false, false};
+        stealQuestionUsed = new boolean[]{false, false};
+
+        activePlayer = 0;
+        doublePointsActive = false;
     }
 
     public static void resetValuesAfterQuestion()
