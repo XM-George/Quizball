@@ -53,9 +53,7 @@ public class FileRead
                     }
                     catch (NumberFormatException e)
                     {
-                        new Question(values[0].trim(),
-                                     values[1].trim().replace("\\n","\n"),
-                                     category);
+                        System.out.println("Invalid points in " + filename + " at line " + lineNumber + ": " + values[2]);
                     }
                 }
             }

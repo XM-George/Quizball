@@ -81,4 +81,17 @@ public class QuizLogic
         activePlayer = 1 - activePlayer;
         doublePointsActive = false;
     }
+
+    public static int getCurrentQuestionPoints()
+    {
+        if (currentQuestion == null) {
+            return 0;
+        }
+
+        if (doublePointsActive) {
+            return currentQuestion.points * 2;
+        }
+
+        return currentQuestion.points;
+    }
 }

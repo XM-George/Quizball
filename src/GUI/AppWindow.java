@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class AppWindow {
@@ -34,9 +33,12 @@ public class AppWindow {
 
         setScoreForPlayers();
 
-        setHelpButtons();
+        boolean gameFinished = (!QuizLogic.categories.isEmpty() && (!Question.hasAvailableQuestion() || QuizLogic.checkIfAllQuestionsArePressed()));
 
-        setCurrentPlayerLabel();
+        if (!gameFinished && !QuizLogic.categories.isEmpty()) {
+            setHelpButtons();
+            setCurrentPlayerLabel();
+        }
 
         main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -53,13 +55,7 @@ public class AppWindow {
         }
         main.getRootPane().setDefaultButton(showQ);
 
-        if (!QuizLogic.categories.isEmpty() && !Question.hasAvailableQuestion()) {
-            showQ.setText("Game finished");
-            showQ.setEnabled(false);
-            showQ.setVisible(false);
-            showGameFinishedScreen();
-        }
-        else if (!QuizLogic.categories.isEmpty() && QuizLogic.checkIfAllQuestionsArePressed()) {
+        if (gameFinished) {
             showQ.setText("Game finished");
             showQ.setEnabled(false);
             showQ.setVisible(false);
@@ -151,8 +147,8 @@ public class AppWindow {
         JMenu names = new JMenu("Set names");
         JMenuItem setNames = new JMenuItem("Set names");
         setNames.addActionListener(_ -> {
-            main.dispose();
             getNames();
+            main.dispose();
             start();
         });
 
@@ -537,7 +533,6 @@ public class AppWindow {
         phoneHelpP1.setFont(f);
         phoneHelpP1.setBounds(50, 180, 90, 50);
         phoneHelpP1.setFocusable(false);
-        phoneHelpP1.setEnabled(!QuizLogic.phoneHelpUsed[0]);
         phoneHelpP1.addActionListener(_ -> {
             QuizLogic.phoneHelpUsed[0] = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " used phone help!");
@@ -549,7 +544,6 @@ public class AppWindow {
         doubleP1.setFont(f);
         doubleP1.setBounds(150, 180, 90, 50);
         doubleP1.setFocusable(false);
-        doubleP1.setEnabled(!QuizLogic.doublePointsUsed[0]);
         doubleP1.addActionListener(_ -> {
             QuizLogic.doublePointsUsed[0] = true;
             QuizLogic.doublePointsActive = true;
@@ -562,7 +556,6 @@ public class AppWindow {
         stealP1.setFont(f);
         stealP1.setBounds(250, 180, 90, 50);
         stealP1.setFocusable(false);
-        stealP1.setEnabled(!QuizLogic.stealQuestionUsed[0]);
         stealP1.addActionListener(_ -> {
             QuizLogic.stealQuestionUsed[0] = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " can steal this question!");
@@ -574,7 +567,6 @@ public class AppWindow {
         phoneHelpP2.setFont(f);
         phoneHelpP2.setBounds(430, 180, 100, 50);
         phoneHelpP2.setFocusable(false);
-        phoneHelpP2.setEnabled(!QuizLogic.phoneHelpUsed[1]);
         phoneHelpP2.addActionListener(_ -> {
             QuizLogic.phoneHelpUsed[1] = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[1] + " used phone help!");
@@ -586,7 +578,6 @@ public class AppWindow {
         doubleP2.setFont(f);
         doubleP2.setBounds(540, 180, 100, 50);
         doubleP2.setFocusable(false);
-        doubleP2.setEnabled(!QuizLogic.doublePointsUsed[1]);
         doubleP2.addActionListener(_ -> {
             QuizLogic.doublePointsUsed[1] = true;
             QuizLogic.doublePointsActive = true;
@@ -599,7 +590,6 @@ public class AppWindow {
         stealP2.setFont(f);
         stealP2.setBounds(650, 180, 100, 50);
         stealP2.setFocusable(false);
-        stealP2.setEnabled(!QuizLogic.stealQuestionUsed[1]);
         stealP2.addActionListener(_ -> {
             QuizLogic.stealQuestionUsed[1] = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[1] + " can steal this question!");
@@ -641,7 +631,7 @@ public class AppWindow {
     public void showQuestionAnswerDialog(String use) {
 
         if (QuizLogic.currentQuestion == null) {
-            JOptionPane.showMessageDialog(main, "No question available.");
+            JOptionPane.showMessageDialog(null, "No question available.");
 
             if (main != null) {
                 main.dispose();

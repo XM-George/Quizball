@@ -71,7 +71,7 @@ public class Question
         }
 
 
-        ArrayList<Question> list = categories.get(QuizLogic.questionCategory)[QuizLogic.questionPoints - 1];
+        ArrayList<Question> list = categoryQuestions[QuizLogic.questionPoints - 1];
         if (list.isEmpty()) {
             QuizLogic.currentQuestion = null;
             return;
@@ -138,19 +138,6 @@ public class Question
         int left = getQuestionsLeft(category, points);
 
         return original - left;
-    }
-
-    public static int getCurrentQuestionPoints()
-    {
-        if (QuizLogic.currentQuestion == null) {
-            return 0;
-        }
-
-        if (QuizLogic.doublePointsActive) {
-            return QuizLogic.currentQuestion.points * 2;
-        }
-
-        return QuizLogic.currentQuestion.points;
     }
 
 }
