@@ -36,6 +36,8 @@ public class AppWindow {
 
         setHelpButtons();
 
+        setCurrentPlayerLabel();
+
         main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JButton showQ = new JButton();
@@ -550,7 +552,6 @@ public class AppWindow {
         doubleP1.setEnabled(!QuizLogic.doublePointsUsed[0]);
         doubleP1.addActionListener(_ -> {
             QuizLogic.doublePointsUsed[0] = true;
-            QuizLogic.activePlayer = 0;
             QuizLogic.doublePointsActive = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " activated x2 points for the next question!");
             doubleP1.setEnabled(false);
@@ -588,7 +589,6 @@ public class AppWindow {
         doubleP2.setEnabled(!QuizLogic.doublePointsUsed[1]);
         doubleP2.addActionListener(_ -> {
             QuizLogic.doublePointsUsed[1] = true;
-            QuizLogic.activePlayer = 1;
             QuizLogic.doublePointsActive = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[1] + " activated x2 points for the next question!");
             doubleP2.setEnabled(false);
@@ -606,6 +606,13 @@ public class AppWindow {
             stealP2.setEnabled(false);
         });
 
+        doubleP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.doublePointsUsed[0]);
+        doubleP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.doublePointsUsed[1]);
+        phoneHelpP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.phoneHelpUsed[0]);
+        phoneHelpP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.phoneHelpUsed[1]);
+        stealP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.stealQuestionUsed[0]);
+        stealP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.stealQuestionUsed[1]);
+
         main.add(phoneHelpP1);
         main.add(doubleP1);
         main.add(stealP1);
@@ -613,6 +620,15 @@ public class AppWindow {
         main.add(phoneHelpP2);
         main.add(doubleP2);
         main.add(stealP2);
+    }
+
+    public void setCurrentPlayerLabel()
+    {
+        JLabel currentPlayerLabel = new JLabel("Παίζει ο " + QuizLogic.playerNames[QuizLogic.activePlayer]);
+        currentPlayerLabel.setFont(f);
+        currentPlayerLabel.setBounds(300, 250, 300, 30);
+
+        main.add(currentPlayerLabel);
     }
 
     public void updateScores() {
@@ -743,6 +759,7 @@ public class AppWindow {
             if (use.equals("Q")) {
                 showQuestionAnswerDialog("A");
             } else if (use.equals("A")) {
+                QuizLogic.switchPlayer();
                 start();
             }
         });

@@ -75,4 +75,10 @@ public class QuizLogic
         QuizLogic.questionPoints = 0;
         QuizLogic.currentQuestion = null;
     }
+
+    public static void switchPlayer()
+    {
+        activePlayer = 1 - activePlayer;
+        doublePointsActive = false;
+    }
 }
