@@ -22,6 +22,7 @@ public class QuizLogic
 
     public static int activePlayer = 0;
     public static boolean doublePointsActive = false;
+    public static boolean stealActive = false;
 
     public static boolean coinFlipDone = false;
 
@@ -69,6 +70,7 @@ public class QuizLogic
 
         activePlayer = 0;
         doublePointsActive = false;
+        stealActive = false;
 
         coinFlipDone = false;
     }
@@ -84,6 +86,7 @@ public class QuizLogic
     {
         activePlayer = 1 - activePlayer;
         doublePointsActive = false;
+        stealActive = false;
     }
 
     public static int getCurrentQuestionPoints()

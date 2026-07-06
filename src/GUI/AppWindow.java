@@ -36,7 +36,7 @@ public class AppWindow {
         boolean gameFinished = (!QuizLogic.categories.isEmpty() && (!Question.hasAvailableQuestion() || QuizLogic.checkIfAllQuestionsArePressed()));
 
         if (!gameFinished && !QuizLogic.categories.isEmpty()) {
-            setHelpButtons();
+            setMainScreenHelpButtons();
             setCurrentPlayerLabel();
         }
 
@@ -44,6 +44,7 @@ public class AppWindow {
 
         JButton showQ = new JButton();
         showQ.setFocusable(false);
+        showQ.setFont(f);
         showQ.setBounds(300, 650, 200, 50);
         if (!QuizLogic.coinFlipDone)
         {
@@ -526,27 +527,10 @@ public class AppWindow {
         main.add(subtractScoreButton2);
     }
 
-    public void setHelpButtons()
+    public void setMainScreenHelpButtons()
     {
-        ImageIcon phoneHelpIcon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("ICONS/phoneHelp.png")));
-        Image scaledPhoneHelpIconImage = phoneHelpIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-
         ImageIcon x2HelpIcon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("ICONS/x2Help.png")));
         Image scaledx2HelpIconImage = x2HelpIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-
-        ImageIcon stealHelpIcon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("ICONS/stealHelp.png")));
-        Image scaledStealHelpIconImage = stealHelpIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-
-        JButton phoneHelpP1 = new JButton();
-        phoneHelpP1.setIcon(new ImageIcon(scaledPhoneHelpIconImage));
-        phoneHelpP1.setFont(f);
-        phoneHelpP1.setBounds(50, 180, 90, 50);
-        phoneHelpP1.setFocusable(false);
-        phoneHelpP1.addActionListener(_ -> {
-            QuizLogic.phoneHelpUsed[0] = true;
-            //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " used phone help!");
-            phoneHelpP1.setEnabled(false);
-        });
 
         JButton doubleP1 = new JButton();
         doubleP1.setIcon(new ImageIcon(scaledx2HelpIconImage));
@@ -558,28 +542,6 @@ public class AppWindow {
             QuizLogic.doublePointsActive = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " activated x2 points for the next question!");
             doubleP1.setEnabled(false);
-        });
-
-        JButton stealP1 = new JButton();
-        stealP1.setIcon(new ImageIcon(scaledStealHelpIconImage));
-        stealP1.setFont(f);
-        stealP1.setBounds(250, 180, 90, 50);
-        stealP1.setFocusable(false);
-        stealP1.addActionListener(_ -> {
-            QuizLogic.stealQuestionUsed[0] = true;
-            //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " can steal this question!");
-            stealP1.setEnabled(false);
-        });
-
-        JButton phoneHelpP2 = new JButton();
-        phoneHelpP2.setIcon(new ImageIcon(scaledPhoneHelpIconImage));
-        phoneHelpP2.setFont(f);
-        phoneHelpP2.setBounds(430, 180, 100, 50);
-        phoneHelpP2.setFocusable(false);
-        phoneHelpP2.addActionListener(_ -> {
-            QuizLogic.phoneHelpUsed[1] = true;
-            //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[1] + " used phone help!");
-            phoneHelpP2.setEnabled(false);
         });
 
         JButton doubleP2 = new JButton();
@@ -594,31 +556,12 @@ public class AppWindow {
             doubleP2.setEnabled(false);
         });
 
-        JButton stealP2 = new JButton();
-        stealP2.setIcon(new ImageIcon(scaledStealHelpIconImage));
-        stealP2.setFont(f);
-        stealP2.setBounds(650, 180, 100, 50);
-        stealP2.setFocusable(false);
-        stealP2.addActionListener(_ -> {
-            QuizLogic.stealQuestionUsed[1] = true;
-            //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[1] + " can steal this question!");
-            stealP2.setEnabled(false);
-        });
 
         doubleP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.doublePointsUsed[0]);
         doubleP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.doublePointsUsed[1]);
-        phoneHelpP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.phoneHelpUsed[0]);
-        phoneHelpP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.phoneHelpUsed[1]);
-        stealP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.stealQuestionUsed[0]);
-        stealP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.stealQuestionUsed[1]);
 
-        main.add(phoneHelpP1);
         main.add(doubleP1);
-        main.add(stealP1);
-
-        main.add(phoneHelpP2);
         main.add(doubleP2);
-        main.add(stealP2);
     }
 
     public void setCurrentPlayerLabel()
@@ -651,7 +594,7 @@ public class AppWindow {
         }
 
         JFrame questionAnswerFrame = new JFrame();
-        questionAnswerFrame.setSize(600, 500);
+        questionAnswerFrame.setSize(600, 600);
         questionAnswerFrame.setLayout(null);
         questionAnswerFrame.setLocationRelativeTo(null);
         questionAnswerFrame.setResizable(false);
@@ -673,6 +616,9 @@ public class AppWindow {
 
             JButton showNext = getShowNextButton(use, questionAnswerFrame);
             questionAnswerFrame.add(showNext);
+
+            JButton helpButton = getHelpMenuButton(questionAnswerFrame);
+            questionAnswerFrame.add(helpButton);
 
         } else if (use.equals("A")) {
             field.setText(QuizLogic.currentQuestion.question + "\n\n" + QuizLogic.currentQuestion.answer);
@@ -748,8 +694,9 @@ public class AppWindow {
     private JButton getShowNextButton(String use, JFrame frame)
     {
         JButton showNext = new JButton("Show Answer");
-        showNext.setBounds(200, 380, 200, 50);
+        showNext.setBounds(50, 480, 200, 50);
         showNext.setFocusable(false);
+        showNext.setFont(f);
 
         frame.getRootPane().setDefaultButton(showNext);
 
@@ -762,6 +709,84 @@ public class AppWindow {
         });
 
         return showNext;
+    }
+
+    private JButton getHelpMenuButton(JFrame questionAnswerFrame)
+    {
+        JButton helpButton = new JButton("Βοήθειες");
+        helpButton.setBounds(350, 480, 200, 50);
+        helpButton.setFocusable(false);
+        helpButton.setFont(f);
+
+        helpButton.addActionListener(_ -> showHelpMenuDialog(questionAnswerFrame));
+
+        return helpButton;
+    }
+
+    public void showHelpMenuDialog(JFrame questionAnswerFrame)
+    {
+        ImageIcon phoneHelpIcon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("ICONS/phoneHelp.png")));
+        Image scaledPhoneHelpIconImage = phoneHelpIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+
+        ImageIcon stealHelpIcon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("ICONS/stealHelp.png")));
+        Image scaledStealHelpIconImage = stealHelpIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+
+        JDialog helpDialog = new JDialog(questionAnswerFrame, "Βοήθειες", true);
+        helpDialog.getContentPane().setPreferredSize(new Dimension(400, 300));
+        helpDialog.pack();
+        helpDialog.setLocationRelativeTo(questionAnswerFrame);
+        helpDialog.setResizable(false);
+        helpDialog.setLayout(null);
+
+        int active = QuizLogic.activePlayer;
+        int other = 1 - active;
+
+        JLabel title = new JLabel("Βοήθειες: " + QuizLogic.playerNames[active]);
+        title.setFont(f);
+        title.setBounds(50, 20, 300, 30);
+
+        JButton phoneHelp = new JButton();
+        phoneHelp.setIcon(new ImageIcon(scaledPhoneHelpIconImage));
+        phoneHelp.setFont(f);
+        phoneHelp.setFocusable(false);
+        phoneHelp.setBounds(30, 70, 60, 45);
+        phoneHelp.setEnabled(!QuizLogic.phoneHelpUsed[active]);
+
+        phoneHelp.addActionListener(_ -> {
+            QuizLogic.phoneHelpUsed[active] = true;
+            phoneHelp.setEnabled(false);
+
+
+            helpDialog.dispose();
+        });
+
+        JButton stealHelp = new JButton();
+        stealHelp.setIcon(new ImageIcon(scaledStealHelpIconImage));
+        stealHelp.setFont(f);
+        stealHelp.setFocusable(false);
+        stealHelp.setBounds(120, 70, 60, 45);
+        stealHelp.setEnabled(!QuizLogic.stealQuestionUsed[other]);
+
+        stealHelp.addActionListener(_ -> {
+            QuizLogic.stealQuestionUsed[other] = true;
+            QuizLogic.stealActive = true;
+
+            stealHelp.setEnabled(false);
+            helpDialog.dispose();
+        });
+
+        JButton closeButton = new JButton("Κλείσιμο");
+        closeButton.setFont(f);
+        closeButton.setFocusable(false);
+        closeButton.setBounds(100, 210, 200, 45);
+        closeButton.addActionListener(_ -> helpDialog.dispose());
+
+        helpDialog.add(title);
+        helpDialog.add(phoneHelp);
+        helpDialog.add(stealHelp);
+        helpDialog.add(closeButton);
+
+        helpDialog.setVisible(true);
     }
 
     public void showCoinFlipDialog()
@@ -879,16 +904,54 @@ public class AppWindow {
 
     public void addAutomaticScoringButtons(JFrame questionAnswerFrame)
     {
-        JButton correctButton = new JButton(QuizLogic.playerNames[QuizLogic.activePlayer] + " σωστός");
-        correctButton.setBounds(50, 380, 220, 50);
-        correctButton.setFocusable(false);
-        correctButton.setFont(f);
+        int active = QuizLogic.activePlayer;
+        int other = 1 - active;
 
-        correctButton.addActionListener(_ -> {
-            int points = QuizLogic.getCurrentQuestionPoints();
+        int activePoints = QuizLogic.getCurrentQuestionPoints();
+        int otherPoints = QuizLogic.currentQuestion.points;
 
-            if (QuizLogic.scores[QuizLogic.activePlayer] + points <= 100) {
-                QuizLogic.scores[QuizLogic.activePlayer] += points;
+        if (!QuizLogic.stealActive) {
+            JButton correctButton = new JButton(QuizLogic.playerNames[active] + " σωστός");
+            correctButton.setBounds(50, 480, 220, 50);
+            correctButton.setFocusable(false);
+            correctButton.setFont(f);
+
+            correctButton.addActionListener(_ -> {
+                if (QuizLogic.scores[active] + activePoints <= 100) {
+                    QuizLogic.scores[active] += activePoints;
+                }
+
+                QuizLogic.switchPlayer();
+
+                questionAnswerFrame.dispose();
+                start();
+            });
+
+            JButton wrongButton = new JButton("Λάθος");
+            wrongButton.setBounds(330, 480, 220, 50);
+            wrongButton.setFocusable(false);
+            wrongButton.setFont(f);
+
+            wrongButton.addActionListener(_ -> {
+                QuizLogic.switchPlayer();
+
+                questionAnswerFrame.dispose();
+                start();
+            });
+
+            questionAnswerFrame.add(correctButton);
+            questionAnswerFrame.add(wrongButton);
+            return;
+        }
+
+        JButton activeCorrect = new JButton(QuizLogic.playerNames[active] + " σωστός");
+        activeCorrect.setBounds(30, 400, 250, 50);
+        activeCorrect.setFocusable(false);
+        activeCorrect.setFont(f);
+
+        activeCorrect.addActionListener(_ -> {
+            if (QuizLogic.scores[active] + activePoints <= 100) {
+                QuizLogic.scores[active] += activePoints;
             }
 
             QuizLogic.switchPlayer();
@@ -897,19 +960,57 @@ public class AppWindow {
             start();
         });
 
-        JButton wrongButton = new JButton("Λάθος");
-        wrongButton.setBounds(330, 380, 220, 50);
-        wrongButton.setFocusable(false);
-        wrongButton.setFont(f);
+        JButton otherCorrect = new JButton(QuizLogic.playerNames[other] + " σωστός");
+        otherCorrect.setBounds(320, 400, 250, 50);
+        otherCorrect.setFocusable(false);
+        otherCorrect.setFont(f);
 
-        wrongButton.addActionListener(_ -> {
+        otherCorrect.addActionListener(_ -> {
+            if (QuizLogic.scores[other] + otherPoints <= 100) {
+                QuizLogic.scores[other] += otherPoints;
+            }
+
             QuizLogic.switchPlayer();
 
             questionAnswerFrame.dispose();
             start();
         });
 
-        questionAnswerFrame.add(correctButton);
-        questionAnswerFrame.add(wrongButton);
+        JButton bothCorrect = new JButton("Και οι δύο σωστοί");
+        bothCorrect.setBounds(30, 480, 250, 50);
+        bothCorrect.setFocusable(false);
+        bothCorrect.setFont(f);
+
+        bothCorrect.addActionListener(_ -> {
+            if (QuizLogic.scores[active] + activePoints <= 100) {
+                QuizLogic.scores[active] += activePoints;
+            }
+
+            if (QuizLogic.scores[other] + otherPoints <= 100) {
+                QuizLogic.scores[other] += otherPoints;
+            }
+
+            QuizLogic.switchPlayer();
+
+            questionAnswerFrame.dispose();
+            start();
+        });
+
+        JButton noneCorrect = new JButton("Κανείς σωστός");
+        noneCorrect.setBounds(320, 480, 250, 50);
+        noneCorrect.setFocusable(false);
+        noneCorrect.setFont(f);
+
+        noneCorrect.addActionListener(_ -> {
+            QuizLogic.switchPlayer();
+
+            questionAnswerFrame.dispose();
+            start();
+        });
+
+        questionAnswerFrame.add(activeCorrect);
+        questionAnswerFrame.add(otherCorrect);
+        questionAnswerFrame.add(bothCorrect);
+        questionAnswerFrame.add(noneCorrect);
     }
 }
