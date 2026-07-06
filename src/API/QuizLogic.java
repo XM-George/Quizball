@@ -23,6 +23,8 @@ public class QuizLogic
     public static int activePlayer = 0;
     public static boolean doublePointsActive = false;
 
+    public static boolean coinFlipDone = false;
+
     public static void initializeSelectedQuestionsArray()
     {
         selectedQuestions = new int[categories.size()][3];
@@ -67,6 +69,8 @@ public class QuizLogic
 
         activePlayer = 0;
         doublePointsActive = false;
+
+        coinFlipDone = false;
     }
 
     public static void resetValuesAfterQuestion()

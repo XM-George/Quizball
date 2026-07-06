@@ -45,8 +45,12 @@ public class AppWindow {
         JButton showQ = new JButton();
         showQ.setFocusable(false);
         showQ.setBounds(300, 650, 200, 50);
-        //showQ.setSize(200, 50);
-        if(QuizLogic.categories.isEmpty()) {
+        if (!QuizLogic.coinFlipDone)
+        {
+            showQ.setText("Run Coin Flip");
+        }
+        else if (QuizLogic.categories.isEmpty())
+        {
             showQ.setText("Select categories");
         }
         else
@@ -63,6 +67,13 @@ public class AppWindow {
         }
 
         showQ.addActionListener(_ -> {
+            if (!QuizLogic.coinFlipDone) {
+                showCoinFlipDialog();
+                main.dispose();
+                start();
+                return;
+            }
+
             if (QuizLogic.categories.isEmpty()) {
                 categorySelect();
 
@@ -79,11 +90,10 @@ public class AppWindow {
 
             boolean selected = questionSelect();
 
+            main.dispose();
             if (selected) {
-                main.dispose();
                 showQuestionAnswerDialog("Q");
             } else {
-                main.dispose();
                 start();
             }
         });
@@ -126,7 +136,6 @@ public class AppWindow {
         Image scaledImage = playAgain.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         restart.setIcon(new ImageIcon(scaledImage));
         restart.setBounds(300, 650, 200, 50);
-        //restart.setSize(200, 50);
         restart.setFocusable(false);
         main.getRootPane().setDefaultButton(restart);
 
@@ -154,9 +163,9 @@ public class AppWindow {
 
         JMenu questions = new JMenu("See questions");
         JMenuItem questionsLeft = new JMenuItem("See questions left and questions played");
-        questionsLeft.addActionListener(_ -> {
-            showQuestionsPlayedAndLeft();
-        });
+        questionsLeft.addActionListener(_ ->
+            showQuestionsPlayedAndLeft()
+        );
 
         names.add(setNames);
 
@@ -754,5 +763,118 @@ public class AppWindow {
             }
         });
         return showNext;
+    }
+
+    public void showCoinFlipDialog()
+    {
+        JDialog coinDialog = new JDialog(main, "Coin Flip", true);
+        coinDialog.getContentPane().setPreferredSize(new Dimension(500, 350));
+        coinDialog.pack();
+        coinDialog.setLocationRelativeTo(main);
+        coinDialog.setResizable(false);
+        coinDialog.setLayout(null);
+        coinDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        JLabel title = new JLabel("Coin Flip");
+        title.setFont(f);
+        title.setBounds(190, 20, 200, 40);
+
+        final int playerChoosing = (int) (Math.random() * 2);
+        JLabel chooseLabel = new JLabel(QuizLogic.playerNames[playerChoosing] + ", διάλεξε:");
+        chooseLabel.setFont(f);
+        chooseLabel.setBounds(150, 70, 300, 30);
+
+        JButton headsButton = new JButton("Κορώνα");
+        headsButton.setFont(f);
+        headsButton.setFocusable(false);
+        headsButton.setBounds(80, 120, 150, 50);
+
+        JButton tailsButton = new JButton("Γράμματα");
+        tailsButton.setFont(f);
+        tailsButton.setFocusable(false);
+        tailsButton.setBounds(270, 120, 150, 50);
+
+        JLabel resultLabel = new JLabel("");
+        resultLabel.setFont(f);
+        resultLabel.setBounds(50, 190, 400, 30);
+
+        JLabel winnerLabel = new JLabel("");
+        winnerLabel.setFont(f);
+        winnerLabel.setBounds(50, 225, 400, 30);
+
+        JButton player1First = new JButton(QuizLogic.playerNames[0] + " πρώτος");
+        player1First.setFont(f);
+        player1First.setFocusable(false);
+        player1First.setBounds(30, 270, 200, 50);
+        player1First.setVisible(false);
+
+        JButton player2First = new JButton(QuizLogic.playerNames[1] + " πρώτος");
+        player2First.setFont(f);
+        player2First.setFocusable(false);
+        player2First.setBounds(270, 270, 200, 50);
+        player2First.setVisible(false);
+
+        final int[] winner = {-1};
+
+        headsButton.addActionListener(_ -> {
+            int coinResult = (int) (Math.random() * 2); // 0 heads, 1 tails
+
+            if (coinResult == 0) {
+                winner[0] = playerChoosing;
+            } else {
+                winner[0] = 1 - playerChoosing;
+            }
+
+            resultLabel.setText("Αποτέλεσμα: " + (coinResult == 0 ? "Κορώνα" : "Γράμματα"));
+            winnerLabel.setText("Νικητής: " + QuizLogic.playerNames[winner[0]] + ", διάλεξε πρώτο παίκτη");
+
+            headsButton.setEnabled(false);
+            tailsButton.setEnabled(false);
+
+            player1First.setVisible(true);
+            player2First.setVisible(true);
+        });
+
+        tailsButton.addActionListener(_ -> {
+            int coinResult = (int) (Math.random() * 2); // 0 heads, 1 tails
+
+            if (coinResult == 1) {
+                winner[0] = playerChoosing;
+            } else {
+                winner[0] = 1 -  playerChoosing;
+            }
+
+            resultLabel.setText("Αποτέλεσμα: " + (coinResult == 0 ? "Κορώνα" : "Γράμματα"));
+            winnerLabel.setText("Νικητής: " + QuizLogic.playerNames[winner[0]] + ", διάλεξε πρώτο παίκτη");
+
+            headsButton.setEnabled(false);
+            tailsButton.setEnabled(false);
+
+            player1First.setVisible(true);
+            player2First.setVisible(true);
+        });
+
+        player1First.addActionListener(_ -> {
+            QuizLogic.activePlayer = 0;
+            QuizLogic.coinFlipDone = true;
+            coinDialog.dispose();
+        });
+
+        player2First.addActionListener(_ -> {
+            QuizLogic.activePlayer = 1;
+            QuizLogic.coinFlipDone = true;
+            coinDialog.dispose();
+        });
+
+        coinDialog.add(title);
+        coinDialog.add(chooseLabel);
+        coinDialog.add(headsButton);
+        coinDialog.add(tailsButton);
+        coinDialog.add(resultLabel);
+        coinDialog.add(winnerLabel);
+        coinDialog.add(player1First);
+        coinDialog.add(player2First);
+
+        coinDialog.setVisible(true);
     }
 }
