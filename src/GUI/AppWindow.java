@@ -5,7 +5,6 @@ import API.QuizLogic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -67,7 +66,7 @@ public class AppWindow {
             showGameFinishedScreen();
         }
 
-        showQ.addActionListener(_ -> {
+        showQ.addActionListener(e -> {
             if (!QuizLogic.coinFlipDone) {
                 showCoinFlipDialog();
                 main.dispose();
@@ -140,7 +139,7 @@ public class AppWindow {
         restart.setFocusable(false);
         main.getRootPane().setDefaultButton(restart);
 
-        restart.addActionListener(_ -> {
+        restart.addActionListener(e -> {
             QuizLogic.restartQuiz();
             main.dispose();
             start();
@@ -156,7 +155,7 @@ public class AppWindow {
         JMenuBar menuBar = new JMenuBar();
         JMenu names = new JMenu("Set names");
         JMenuItem setNames = new JMenuItem("Set names");
-        setNames.addActionListener(_ -> {
+        setNames.addActionListener(e -> {
             getNames();
             main.dispose();
             start();
@@ -164,7 +163,7 @@ public class AppWindow {
 
         JMenu questions = new JMenu("See questions");
         JMenuItem questionsLeft = new JMenuItem("See questions left and questions played");
-        questionsLeft.addActionListener(_ ->
+        questionsLeft.addActionListener(e ->
             showQuestionsPlayedAndLeft()
         );
 
@@ -202,7 +201,7 @@ public class AppWindow {
             ImageIcon rawCategoryIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ICONS/" + c + ".png")));
             Image categoryImage = rawCategoryIcon.getImage().getScaledInstance(42, 42, Image.SCALE_SMOOTH);
 
-            JLabel label = new JLabel(c.toUpperCase());
+            JLabel label = new JLabel(Question.getCategoryDisplayName(c));
             label.setBounds(width, height, 250,30);
             label.setFont(f);
 
@@ -211,9 +210,8 @@ public class AppWindow {
             button.setBounds(width, height + 30, 100, 50);
             button.setFocusable(false);
             buttons[categorySum] = button;
-            button.addActionListener(_ -> {
-                String category = new File(rawCategoryIcon.getDescription()).getName().replaceFirst("[.][^.]+$", "");
-                QuizLogic.categories.add(category);
+            button.addActionListener(e -> {
+                QuizLogic.categories.add(c);
                 button.setEnabled(false);
             });
 
@@ -233,14 +231,14 @@ public class AppWindow {
         confirmButton.setBounds(50, 420, 200, 50);
         confirmButton.setFocusable(false);
         confirmButton.setFont(f);
-        confirmButton.addActionListener(_ -> categoryDialog.dispose());
+        confirmButton.addActionListener(e -> categoryDialog.dispose());
         categoryDialog.getRootPane().setDefaultButton(confirmButton);
 
         JButton resetButton = new JButton("Reset");
         resetButton.setBounds(300, 420, 200, 50);
         resetButton.setFocusable(false);
         resetButton.setFont(f);
-        resetButton.addActionListener(_ -> {
+        resetButton.addActionListener(e -> {
             QuizLogic.categories.clear();
             for (JButton b : buttons)
             {
@@ -252,7 +250,7 @@ public class AppWindow {
         cancelButton.setBounds(550, 420, 200, 50);
         cancelButton.setFocusable(false);
         cancelButton.setFont(f);
-        cancelButton.addActionListener(_ -> {
+        cancelButton.addActionListener(e -> {
             QuizLogic.categories.clear();
             categoryDialog.dispose();
         });
@@ -289,7 +287,7 @@ public class AppWindow {
 
         for (String c : QuizLogic.categories)
         {
-            JLabel label = new JLabel(c.toUpperCase());
+            JLabel label = new JLabel(Question.getCategoryDisplayName(c));
             label.setBounds(width, height, 340,30);
             label.setFont(f);
 
@@ -320,7 +318,7 @@ public class AppWindow {
                 int finalI = i;
                 int finalCategoryNumber = categoryNumber;
 
-                button.addActionListener(_ -> {
+                button.addActionListener(e -> {
                     QuizLogic.questionCategory = c;
                     QuizLogic.questionPoints = points;
                     QuizLogic.selectedQuestions[finalCategoryNumber][finalI] = 1;
@@ -346,7 +344,7 @@ public class AppWindow {
         cancelButton.setBounds(100, height, 200, 50);
         cancelButton.setFocusable(false);
         cancelButton.setFont(f);
-        cancelButton.addActionListener(_ -> questionDialog.dispose());
+        cancelButton.addActionListener(e -> questionDialog.dispose());
 
         questionDialog.add(cancelButton);
 
@@ -399,7 +397,7 @@ public class AppWindow {
         setNamesButton.setFont(f);
         setNamesButton.setFocusable(false);
         nameDialog.getRootPane().setDefaultButton(setNamesButton);
-        setNamesButton.addActionListener(_ -> {
+        setNamesButton.addActionListener(e -> {
             if(!nameField1.getText().isEmpty())
             {
                 QuizLogic.playerNames[0] = nameField1.getText();
@@ -414,7 +412,7 @@ public class AppWindow {
         JButton cancelButton = new JButton("Cancel");
         cancelButton.setFont(f);
         cancelButton.setFocusable(false);
-        cancelButton.addActionListener(_ -> nameDialog.dispose());
+        cancelButton.addActionListener(e -> nameDialog.dispose());
 
         nameLabel1.setBounds(50, 20, 325, 30);
         nameLabel2.setBounds(425, 20, 325, 30);
@@ -469,7 +467,7 @@ public class AppWindow {
         JButton addScoreButton1 = new JButton("+1");
         addScoreButton1.setFont(f);
         addScoreButton1.setFocusable(false);
-        addScoreButton1.addActionListener(_ -> {
+        addScoreButton1.addActionListener(e -> {
             if (QuizLogic.scores[0] + 1 <=100)
             {
                 QuizLogic.scores[0]++;
@@ -480,7 +478,7 @@ public class AppWindow {
         JButton subtractScoreButton1 = new JButton("-1");
         subtractScoreButton1.setFont(f);
         subtractScoreButton1.setFocusable(false);
-        subtractScoreButton1.addActionListener(_ -> {
+        subtractScoreButton1.addActionListener(e -> {
            if(QuizLogic.scores[0] - 1 >= 0)
            {
                QuizLogic.scores[0]--;
@@ -491,7 +489,7 @@ public class AppWindow {
         JButton addScoreButton2 = new JButton("+1");
         addScoreButton2.setFont(f);
         addScoreButton2.setFocusable(false);
-        addScoreButton2.addActionListener(_ -> {
+        addScoreButton2.addActionListener(e -> {
             if (QuizLogic.scores[1] + 1 <=100)
             {
                 QuizLogic.scores[1]++;
@@ -502,7 +500,7 @@ public class AppWindow {
         JButton subtractScoreButton2 = new JButton("-1");
         subtractScoreButton2.setFont(f);
         subtractScoreButton2.setFocusable(false);
-        subtractScoreButton2.addActionListener(_ -> {
+        subtractScoreButton2.addActionListener(e -> {
             if(QuizLogic.scores[1] - 1 >= 0)
             {
                 QuizLogic.scores[1]--;
@@ -537,7 +535,7 @@ public class AppWindow {
         doubleP1.setFont(f);
         doubleP1.setBounds(150, 180, 90, 50);
         doubleP1.setFocusable(false);
-        doubleP1.addActionListener(_ -> {
+        doubleP1.addActionListener(e -> {
             QuizLogic.doublePointsUsed[0] = true;
             QuizLogic.doublePointsActive = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[0] + " activated x2 points for the next question!");
@@ -549,7 +547,7 @@ public class AppWindow {
         doubleP2.setFont(f);
         doubleP2.setBounds(540, 180, 100, 50);
         doubleP2.setFocusable(false);
-        doubleP2.addActionListener(_ -> {
+        doubleP2.addActionListener(e -> {
             QuizLogic.doublePointsUsed[1] = true;
             QuizLogic.doublePointsActive = true;
             //JOptionPane.showMessageDialog(main, QuizLogic.playerNames[1] + " activated x2 points for the next question!");
@@ -662,7 +660,7 @@ public class AppWindow {
                 }
 
                 rows.add(new Object[]{
-                        category + " x" + points,
+                        Question.getCategoryDisplayName(category) + " x" + points,
                         Question.getQuestionsLeft(category, points),
                         Question.getQuestionsPlayed(category, points)
                 });
@@ -680,7 +678,7 @@ public class AppWindow {
 
         JButton closeButton = new JButton("Close");
         closeButton.setFocusable(false);
-        closeButton.addActionListener(_ -> dialog.dispose());
+        closeButton.addActionListener(e -> dialog.dispose());
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(closeButton);
@@ -700,7 +698,7 @@ public class AppWindow {
 
         frame.getRootPane().setDefaultButton(showNext);
 
-        showNext.addActionListener(_ -> {
+        showNext.addActionListener(e -> {
             frame.dispose();
 
             if (use.equals("Q")) {
@@ -718,7 +716,7 @@ public class AppWindow {
         helpButton.setFocusable(false);
         helpButton.setFont(f);
 
-        helpButton.addActionListener(_ -> showHelpMenuDialog(questionAnswerFrame));
+        helpButton.addActionListener(e -> showHelpMenuDialog(questionAnswerFrame));
 
         return helpButton;
     }
@@ -751,8 +749,9 @@ public class AppWindow {
         phoneHelp.setFocusable(false);
         phoneHelp.setBounds(30, 70, 60, 45);
         phoneHelp.setEnabled(!QuizLogic.phoneHelpUsed[active]);
+        phoneHelp.setToolTipText("Τηλέφωνο");
 
-        phoneHelp.addActionListener(_ -> {
+        phoneHelp.addActionListener(e -> {
             QuizLogic.phoneHelpUsed[active] = true;
             phoneHelp.setEnabled(false);
 
@@ -766,8 +765,9 @@ public class AppWindow {
         stealHelp.setFocusable(false);
         stealHelp.setBounds(120, 70, 60, 45);
         stealHelp.setEnabled(!QuizLogic.stealQuestionUsed[other]);
+        stealHelp.setToolTipText("Κλέψιμο");
 
-        stealHelp.addActionListener(_ -> {
+        stealHelp.addActionListener(e -> {
             QuizLogic.stealQuestionUsed[other] = true;
             QuizLogic.stealActive = true;
 
@@ -779,7 +779,7 @@ public class AppWindow {
         closeButton.setFont(f);
         closeButton.setFocusable(false);
         closeButton.setBounds(100, 210, 200, 45);
-        closeButton.addActionListener(_ -> helpDialog.dispose());
+        closeButton.addActionListener(e -> helpDialog.dispose());
 
         helpDialog.add(title);
         helpDialog.add(phoneHelp);
@@ -840,7 +840,7 @@ public class AppWindow {
 
         final int[] winner = {-1};
 
-        headsButton.addActionListener(_ -> {
+        headsButton.addActionListener(e -> {
             int coinResult = (int) (Math.random() * 2); // 0 heads, 1 tails
 
             if (coinResult == 0) {
@@ -859,7 +859,7 @@ public class AppWindow {
             player2First.setVisible(true);
         });
 
-        tailsButton.addActionListener(_ -> {
+        tailsButton.addActionListener(e -> {
             int coinResult = (int) (Math.random() * 2); // 0 heads, 1 tails
 
             if (coinResult == 1) {
@@ -878,13 +878,13 @@ public class AppWindow {
             player2First.setVisible(true);
         });
 
-        player1First.addActionListener(_ -> {
+        player1First.addActionListener(e -> {
             QuizLogic.activePlayer = 0;
             QuizLogic.coinFlipDone = true;
             coinDialog.dispose();
         });
 
-        player2First.addActionListener(_ -> {
+        player2First.addActionListener(e -> {
             QuizLogic.activePlayer = 1;
             QuizLogic.coinFlipDone = true;
             coinDialog.dispose();
@@ -916,7 +916,7 @@ public class AppWindow {
             correctButton.setFocusable(false);
             correctButton.setFont(f);
 
-            correctButton.addActionListener(_ -> {
+            correctButton.addActionListener(e -> {
                 if (QuizLogic.scores[active] + activePoints <= 100) {
                     QuizLogic.scores[active] += activePoints;
                 }
@@ -932,7 +932,7 @@ public class AppWindow {
             wrongButton.setFocusable(false);
             wrongButton.setFont(f);
 
-            wrongButton.addActionListener(_ -> {
+            wrongButton.addActionListener(e -> {
                 QuizLogic.switchPlayer();
 
                 questionAnswerFrame.dispose();
@@ -949,7 +949,7 @@ public class AppWindow {
         activeCorrect.setFocusable(false);
         activeCorrect.setFont(f);
 
-        activeCorrect.addActionListener(_ -> {
+        activeCorrect.addActionListener(e -> {
             if (QuizLogic.scores[active] + activePoints <= 100) {
                 QuizLogic.scores[active] += activePoints;
             }
@@ -965,7 +965,7 @@ public class AppWindow {
         otherCorrect.setFocusable(false);
         otherCorrect.setFont(f);
 
-        otherCorrect.addActionListener(_ -> {
+        otherCorrect.addActionListener(e -> {
             if (QuizLogic.scores[other] + otherPoints <= 100) {
                 QuizLogic.scores[other] += otherPoints;
             }
@@ -981,7 +981,7 @@ public class AppWindow {
         bothCorrect.setFocusable(false);
         bothCorrect.setFont(f);
 
-        bothCorrect.addActionListener(_ -> {
+        bothCorrect.addActionListener(e -> {
             if (QuizLogic.scores[active] + activePoints <= 100) {
                 QuizLogic.scores[active] += activePoints;
             }
@@ -1001,7 +1001,7 @@ public class AppWindow {
         noneCorrect.setFocusable(false);
         noneCorrect.setFont(f);
 
-        noneCorrect.addActionListener(_ -> {
+        noneCorrect.addActionListener(e -> {
             QuizLogic.switchPlayer();
 
             questionAnswerFrame.dispose();

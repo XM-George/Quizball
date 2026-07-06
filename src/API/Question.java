@@ -16,8 +16,15 @@ public class Question
     public String answer;
     public int points;
 
-    static
-    {
+    public static Map<String, String> categoryDisplayNames = new HashMap<>();
+
+    static {
+        categoryDisplayNames.put("geography", "Geography");
+        categoryDisplayNames.put("gossip", "Gossip");
+        categoryDisplayNames.put("hiddenQuestion", "Hidden Question");
+        categoryDisplayNames.put("history", "History");
+        categoryDisplayNames.put("top5", "Top 5");
+
         for (String category : categoryNames)
         {
             categories.put(category , new ArrayList[]{new ArrayList<Question>(), new ArrayList<Question>(), new ArrayList<Question>()});
@@ -138,6 +145,11 @@ public class Question
         int left = getQuestionsLeft(category, points);
 
         return original - left;
+    }
+
+    public static String getCategoryDisplayName(String category)
+    {
+        return categoryDisplayNames.getOrDefault(category, category);
     }
 
 }
