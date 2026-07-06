@@ -670,16 +670,18 @@ public class AppWindow {
         if (use.equals("Q")) {
             field.setText(QuizLogic.currentQuestion.question);
             questionAnswerFrame.setTitle("Question");
+
+            JButton showNext = getShowNextButton(use, questionAnswerFrame);
+            questionAnswerFrame.add(showNext);
+
         } else if (use.equals("A")) {
             field.setText(QuizLogic.currentQuestion.question + "\n\n" + QuizLogic.currentQuestion.answer);
             questionAnswerFrame.setTitle("Answer");
+
+            addAutomaticScoringButtons(questionAnswerFrame);
         }
 
-        JButton showNext = getShowNextButton(use, questionAnswerFrame);
-
         questionAnswerFrame.add(field);
-        questionAnswerFrame.add(showNext);
-
         questionAnswerFrame.setVisible(true);
     }
 
@@ -743,25 +745,22 @@ public class AppWindow {
         dialog.setVisible(true);
     }
 
-    private JButton getShowNextButton(String use, JFrame frame) {
-        JButton showNext = new JButton();
+    private JButton getShowNextButton(String use, JFrame frame)
+    {
+        JButton showNext = new JButton("Show Answer");
         showNext.setBounds(200, 380, 200, 50);
-        if (use.equals("Q")) {
-            showNext.setText("Show Answer");
-        } else if (use.equals("A")) {
-            showNext.setText("Next Question");
-        }
         showNext.setFocusable(false);
+
         frame.getRootPane().setDefaultButton(showNext);
+
         showNext.addActionListener(_ -> {
             frame.dispose();
+
             if (use.equals("Q")) {
                 showQuestionAnswerDialog("A");
-            } else if (use.equals("A")) {
-                QuizLogic.switchPlayer();
-                start();
             }
         });
+
         return showNext;
     }
 
@@ -876,5 +875,41 @@ public class AppWindow {
         coinDialog.add(player2First);
 
         coinDialog.setVisible(true);
+    }
+
+    public void addAutomaticScoringButtons(JFrame questionAnswerFrame)
+    {
+        JButton correctButton = new JButton(QuizLogic.playerNames[QuizLogic.activePlayer] + " σωστός");
+        correctButton.setBounds(50, 380, 220, 50);
+        correctButton.setFocusable(false);
+        correctButton.setFont(f);
+
+        correctButton.addActionListener(_ -> {
+            int points = QuizLogic.getCurrentQuestionPoints();
+
+            if (QuizLogic.scores[QuizLogic.activePlayer] + points <= 100) {
+                QuizLogic.scores[QuizLogic.activePlayer] += points;
+            }
+
+            QuizLogic.switchPlayer();
+
+            questionAnswerFrame.dispose();
+            start();
+        });
+
+        JButton wrongButton = new JButton("Λάθος");
+        wrongButton.setBounds(330, 380, 220, 50);
+        wrongButton.setFocusable(false);
+        wrongButton.setFont(f);
+
+        wrongButton.addActionListener(_ -> {
+            QuizLogic.switchPlayer();
+
+            questionAnswerFrame.dispose();
+            start();
+        });
+
+        questionAnswerFrame.add(correctButton);
+        questionAnswerFrame.add(wrongButton);
     }
 }
