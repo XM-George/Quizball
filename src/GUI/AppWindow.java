@@ -681,7 +681,7 @@ public class AppWindow {
 
         JLabel infoLabel = new JLabel(
                 "Παίζει: " + QuizLogic.playerNames[QuizLogic.activePlayer]
-                        + " | Πόντοι: x" + QuizLogic.getCurrentQuestionPoints()
+                        + " | Πόντοι: " + QuizLogic.getCurrentQuestionPoints()
         );
         infoLabel.setFont(f);
         infoLabel.setBounds(50, 20, 500, 30);
