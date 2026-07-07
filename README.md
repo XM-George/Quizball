@@ -136,8 +136,8 @@ src/GUI/Main.java
 ```bash
 
 cd src
-javac GUI/Main.java
-java GUI.Main
+javac Main.java
+java Main
 
 ```
 
