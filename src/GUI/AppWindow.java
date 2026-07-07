@@ -18,7 +18,7 @@ public class AppWindow {
 
     public void start() {
         main = new JFrame();
-        main.setPreferredSize(new Dimension(800, 800));
+        main.setPreferredSize(new Dimension(800, 550));
         main.pack();
         main.setLocationRelativeTo(null);
         main.setResizable(false);
@@ -44,7 +44,7 @@ public class AppWindow {
         JButton showQ = new JButton();
         showQ.setFocusable(false);
         showQ.setFont(f);
-        showQ.setBounds(300, 650, 200, 50);
+        showQ.setBounds(300, 400, 200, 50);
         if (!QuizLogic.coinFlipDone)
         {
             showQ.setText("Run Coin Flip");
@@ -107,7 +107,7 @@ public class AppWindow {
     {
         JLabel finished = new JLabel("Game finished");
         finished.setFont(f);
-        finished.setBounds(300, 450, 300, 40);
+        finished.setBounds(320, 200, 300, 40);
 
         String winnerText;
 
@@ -121,7 +121,7 @@ public class AppWindow {
 
         JLabel winner = new JLabel(winnerText);
         winner.setFont(f);
-        winner.setBounds(300, 500, 300, 40);
+        winner.setBounds(320, 270, 300, 40);
 
         main.add(finished);
         main.add(winner);
@@ -135,7 +135,7 @@ public class AppWindow {
         ImageIcon playAgain = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ICONS/play-again.png")));
         Image scaledImage = playAgain.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         restart.setIcon(new ImageIcon(scaledImage));
-        restart.setBounds(300, 650, 200, 50);
+        restart.setBounds(300, 400, 200, 50);
         restart.setFocusable(false);
         main.getRootPane().setDefaultButton(restart);
 
@@ -167,12 +167,21 @@ public class AppWindow {
             showQuestionsPlayedAndLeft()
         );
 
+        JMenu changeScore = new JMenu("Change score");
+        JMenuItem changeScores = new JMenuItem("Change scores");
+        changeScores.addActionListener(e ->
+            changePlayerScores()
+        );
+
         names.add(setNames);
 
         questions.add(questionsLeft);
 
+        changeScore.add(changeScores);
+
         menuBar.add(names);
         menuBar.add(questions);
+        menuBar.add(changeScore);
 
         main.setJMenuBar(menuBar);
     }
@@ -468,6 +477,41 @@ public class AppWindow {
         scoreLabel2 = new JLabel("Score: " + QuizLogic.scores[1]);
         scoreLabel2.setFont(f);
 
+        scoreLabel1.setBounds(50, 60, 300, 30);
+        scoreLabel2.setBounds(450, 60, 300, 30);
+
+        main.add(scoreLabel1);
+        main.add(scoreLabel2);
+    }
+
+    public void changePlayerScores()
+    {
+        JDialog scoringDialog = new JDialog();
+        scoringDialog.getContentPane().setPreferredSize(new Dimension(500, 300));
+        scoringDialog.pack();
+        scoringDialog.setLayout(null);
+        scoringDialog.setLocationRelativeTo(null);
+        scoringDialog.setResizable(false);
+        scoringDialog.setModal(true);
+
+        JLabel nameLabel1 = new JLabel(QuizLogic.playerNames[0]);
+        nameLabel1.setFont(f);
+
+        JLabel nameLabel2 = new JLabel(QuizLogic.playerNames[1]);
+        nameLabel2.setFont(f);
+
+        JLabel scoreP1 = new JLabel("Score: " + QuizLogic.scores[0]);
+        scoreP1.setFont(f);
+
+        JLabel scoreP2 = new JLabel("Score: " + QuizLogic.scores[1]);
+        scoreP2.setFont(f);
+
+        nameLabel1.setBounds(20, 30, 250, 30);
+        nameLabel2.setBounds(270, 30, 250, 30);
+
+        scoreP1.setBounds(20, 70, 250, 30);
+        scoreP2.setBounds(270, 70, 250, 30);
+
         JButton addScoreButton1 = new JButton("+1");
         addScoreButton1.setFont(f);
         addScoreButton1.setFocusable(false);
@@ -477,17 +521,19 @@ public class AppWindow {
                 QuizLogic.scores[0]++;
             }
             updateScores();
+            scoreP1.setText("Score: " + QuizLogic.scores[0]);
         });
 
         JButton subtractScoreButton1 = new JButton("-1");
         subtractScoreButton1.setFont(f);
         subtractScoreButton1.setFocusable(false);
         subtractScoreButton1.addActionListener(e -> {
-           if(QuizLogic.scores[0] - 1 >= 0)
-           {
-               QuizLogic.scores[0]--;
-           }
-           updateScores();
+            if(QuizLogic.scores[0] - 1 >= 0)
+            {
+                QuizLogic.scores[0]--;
+            }
+            updateScores();
+            scoreP1.setText("Score: " + QuizLogic.scores[0]);
         });
 
         JButton addScoreButton2 = new JButton("+1");
@@ -499,6 +545,7 @@ public class AppWindow {
                 QuizLogic.scores[1]++;
             }
             updateScores();
+            scoreP2.setText("Score: " + QuizLogic.scores[1]);
         });
 
         JButton subtractScoreButton2 = new JButton("-1");
@@ -509,24 +556,35 @@ public class AppWindow {
             {
                 QuizLogic.scores[1]--;
             }
+            scoreP2.setText("Score: " + QuizLogic.scores[1]);
             updateScores();
         });
 
-        scoreLabel1.setBounds(50, 60, 300, 30);
-        scoreLabel2.setBounds(450, 60, 300, 30);
+        addScoreButton1.setBounds(20, 120, 90, 40);
+        subtractScoreButton1.setBounds(140, 120, 90, 40);
 
-        addScoreButton1.setBounds(50, 100, 100, 40);
-        subtractScoreButton1.setBounds(200, 100, 100, 40);
+        addScoreButton2.setBounds(270, 120, 90, 40);
+        subtractScoreButton2.setBounds(390, 120, 90, 40);
 
-        addScoreButton2.setBounds(450, 100, 100, 40);
-        subtractScoreButton2.setBounds(600, 100, 100, 40);
+        JButton exitButton = new JButton("Exit");
+        exitButton.setFont(f);
+        exitButton.setFocusable(false);
+        exitButton.addActionListener(e -> {
+            scoringDialog.dispose();
+        });
+        exitButton.setBounds(150, 220, 200, 50);
 
-        main.add(scoreLabel1);
-        main.add(scoreLabel2);
-        main.add(addScoreButton1);
-        main.add(subtractScoreButton1);
-        main.add(addScoreButton2);
-        main.add(subtractScoreButton2);
+        scoringDialog.add(nameLabel1);
+        scoringDialog.add(nameLabel2);
+        scoringDialog.add(scoreP1);
+        scoringDialog.add(scoreP2);
+        scoringDialog.add(addScoreButton1);
+        scoringDialog.add(subtractScoreButton1);
+        scoringDialog.add(addScoreButton2);
+        scoringDialog.add(subtractScoreButton2);
+        scoringDialog.add(exitButton);
+
+        scoringDialog.setVisible(true);
     }
 
     public void setMainScreenHelpButtons()
