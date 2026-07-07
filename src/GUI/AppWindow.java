@@ -231,7 +231,11 @@ public class AppWindow {
         confirmButton.setBounds(50, 420, 200, 50);
         confirmButton.setFocusable(false);
         confirmButton.setFont(f);
-        confirmButton.addActionListener(e -> categoryDialog.dispose());
+        confirmButton.addActionListener(e -> {
+            if (!QuizLogic.categories.isEmpty()) {
+                categoryDialog.dispose();
+            }
+        });
         categoryDialog.getRootPane().setDefaultButton(confirmButton);
 
         JButton resetButton = new JButton("Reset");
@@ -554,6 +558,8 @@ public class AppWindow {
             doubleP2.setEnabled(false);
         });
 
+        doubleP1.setToolTipText("x2 βαθμοί ερώτησης");
+        doubleP2.setToolTipText("χ2 βαθμοί ερώτησης");
 
         doubleP1.setEnabled(QuizLogic.activePlayer == 0 && !QuizLogic.doublePointsUsed[0]);
         doubleP2.setEnabled(QuizLogic.activePlayer == 1 && !QuizLogic.doublePointsUsed[1]);
@@ -564,7 +570,13 @@ public class AppWindow {
 
     public void setCurrentPlayerLabel()
     {
-        JLabel currentPlayerLabel = new JLabel("Παίζει ο " + QuizLogic.playerNames[QuizLogic.activePlayer]);
+        String text = "Παίζει ο " + QuizLogic.playerNames[QuizLogic.activePlayer];
+
+        if (QuizLogic.doublePointsActive) {
+            text += " | x2 ACTIVE";
+        }
+
+        JLabel currentPlayerLabel = new JLabel(text);
         currentPlayerLabel.setFont(f);
         currentPlayerLabel.setBounds(300, 250, 300, 30);
 
@@ -601,12 +613,21 @@ public class AppWindow {
         questionAnswerFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         JTextArea field = new JTextArea();
-        field.setBounds(50, 50, 500, 300);
         field.setEditable(false);
         field.setFocusable(false);
         field.setLineWrap(true);
         field.setWrapStyleWord(true);
         field.setFont(f);
+        field.setMargin(new Insets(10, 10, 10, 10));
+        field.setBorder(null);
+
+        JLabel infoLabel = new JLabel(
+                "Παίζει: " + QuizLogic.playerNames[QuizLogic.activePlayer]
+                        + " | Πόντοι: x" + QuizLogic.getCurrentQuestionPoints()
+        );
+        infoLabel.setFont(f);
+        infoLabel.setBounds(50, 20, 500, 30);
+        questionAnswerFrame.add(infoLabel);
 
         if (use.equals("Q")) {
             field.setText(QuizLogic.currentQuestion.question);
@@ -620,12 +641,22 @@ public class AppWindow {
 
         } else if (use.equals("A")) {
             field.setText(QuizLogic.currentQuestion.question + "\n\n" + QuizLogic.currentQuestion.answer);
-            questionAnswerFrame.setTitle("Answer");
+            if (QuizLogic.stealActive) {
+                questionAnswerFrame.setTitle("Answer - Steal Active");
+            } else {
+                questionAnswerFrame.setTitle("Answer");
+            }
 
             addAutomaticScoringButtons(questionAnswerFrame);
         }
 
-        questionAnswerFrame.add(field);
+        JScrollPane scrollPane = new JScrollPane(field);
+        scrollPane.setBounds(50, 60, 500, 300);
+        scrollPane.setBorder(null);
+        scrollPane.setViewportBorder(null);
+
+        questionAnswerFrame.add(scrollPane);
+
         questionAnswerFrame.setVisible(true);
     }
 
