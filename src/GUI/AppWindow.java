@@ -18,7 +18,7 @@ public class AppWindow {
 
     public void start() {
         main = new JFrame();
-        main.setPreferredSize(new Dimension(800, 550));
+        main.setPreferredSize(new Dimension(800, 450));
         main.pack();
         main.setLocationRelativeTo(null);
         main.setResizable(false);
@@ -44,7 +44,7 @@ public class AppWindow {
         JButton showQ = new JButton();
         showQ.setFocusable(false);
         showQ.setFont(f);
-        showQ.setBounds(300, 400, 200, 50);
+        showQ.setBounds(300, 300, 200, 50);
         if (!QuizLogic.coinFlipDone)
         {
             showQ.setText("Run Coin Flip");
@@ -107,7 +107,7 @@ public class AppWindow {
     {
         JLabel finished = new JLabel("Game finished");
         finished.setFont(f);
-        finished.setBounds(320, 200, 300, 40);
+        finished.setBounds(320, 150, 300, 40);
 
         String winnerText;
 
@@ -121,7 +121,7 @@ public class AppWindow {
 
         JLabel winner = new JLabel(winnerText);
         winner.setFont(f);
-        winner.setBounds(320, 270, 300, 40);
+        winner.setBounds(320, 210, 300, 40);
 
         main.add(finished);
         main.add(winner);
@@ -135,7 +135,7 @@ public class AppWindow {
         ImageIcon playAgain = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ICONS/play-again.png")));
         Image scaledImage = playAgain.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         restart.setIcon(new ImageIcon(scaledImage));
-        restart.setBounds(300, 400, 200, 50);
+        restart.setBounds(300, 300, 200, 50);
         restart.setFocusable(false);
         main.getRootPane().setDefaultButton(restart);
 
@@ -595,7 +595,7 @@ public class AppWindow {
         JButton doubleP1 = new JButton();
         doubleP1.setIcon(new ImageIcon(scaledx2HelpIconImage));
         doubleP1.setFont(f);
-        doubleP1.setBounds(150, 180, 90, 50);
+        doubleP1.setBounds(50, 110, 90, 50);
         doubleP1.setFocusable(false);
         doubleP1.addActionListener(e -> {
             QuizLogic.doublePointsUsed[0] = true;
@@ -607,7 +607,7 @@ public class AppWindow {
         JButton doubleP2 = new JButton();
         doubleP2.setIcon(new ImageIcon(scaledx2HelpIconImage));
         doubleP2.setFont(f);
-        doubleP2.setBounds(540, 180, 100, 50);
+        doubleP2.setBounds(450, 110, 100, 50);
         doubleP2.setFocusable(false);
         doubleP2.addActionListener(e -> {
             QuizLogic.doublePointsUsed[1] = true;
@@ -636,7 +636,7 @@ public class AppWindow {
 
         JLabel currentPlayerLabel = new JLabel(text);
         currentPlayerLabel.setFont(f);
-        currentPlayerLabel.setBounds(300, 250, 300, 30);
+        currentPlayerLabel.setBounds(320, 190, 300, 30);
 
         main.add(currentPlayerLabel);
     }
